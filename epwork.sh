@@ -2,6 +2,7 @@
 #Version:0.1
 
 ECOPLANTS_META_PROJECT=/Users/chengxingjie/Desktop/ecoplants_projects/meta
+JTOOL_DIR_PATH=/Users/chengxingjie/Desktop/ecoplants_projects/jtool
 
 funcShowErrorOperation() {
   echo "\033[1m 您的操作有误 \033[0m"
@@ -22,6 +23,7 @@ funcShowMainMenu() {
   echo "\033[1m 欢迎使用 Jay 的工具小助手 \033[0m"
   echo "\033 1. amp model 生成 \033[0m"
   echo "\033 2. amp rpc 生成  \033[0m"
+  echo "\033 3. amp run 批量启动服务\033[0m"
   echo "\033[37m----------------------------------------\033[0m"
 
   funcSelectMenu
@@ -38,6 +40,9 @@ funcSelectMenu() {
     ;;
   2)
     funcShowAmpRpcMenu
+    ;;
+  3)
+    funcAMPRun
     ;;
   *) funcShowErrorOperation ;;
   esac
@@ -169,6 +174,11 @@ funcSelectModelToGenerate() {
     eptools gorm -s ./sql/services/amp/$ampModelName -d services/amp/common/model
     funcShowSuccessOperation
   fi
+}
+
+funcAMPRun(){
+  cd $JTOOL_DIR_PATH
+  bash epwork_apple.sh
 }
 
 # 主入口方法
