@@ -5,6 +5,7 @@ ECOPLANTS_META_PROJECT=/Users/chengxingjie/Desktop/ecoplants_projects/meta
 
 funcShowErrorOperation() {
   echo "\033[1m 您的操作有误 \033[0m"
+  read -p "请输入任意键继续"
   funcShowMainMenu
 }
 
@@ -19,8 +20,8 @@ funcShowMainMenu() {
   clear
   echo "\033[37m----------------------------------------\033[0m"
   echo "\033[1m 欢迎使用 Jay 的工具小助手 \033[0m"
-  echo "\033 1. amp rpc 生成  \033[0m"
-  echo "\033 2. model 生成 \033[0m"
+  echo "\033 1. amp model 生成 \033[0m"
+  echo "\033 2. amp rpc 生成  \033[0m"
   echo "\033[37m----------------------------------------\033[0m"
 
   funcSelectMenu
@@ -33,11 +34,11 @@ funcSelectMenu() {
 
   case $mainMenuCode in
   1)
+    funcSelectModelToGenerate
+    ;;
+  2)
     funcShowAmpRpcMenu
     ;;
-    #     2) echo "选择model模式"
-    #     funcWithModel
-    #     ;;
   *) funcShowErrorOperation ;;
   esac
 }
@@ -66,6 +67,7 @@ funcShowAmpRpcMenu() {
   funcSelectAmpRpc
 }
 
+# funcSelectMenu 选择要生成的 AMP 代码
 funcSelectAmpRpc() {
   read -p "请选择需要生成的RPC：" ampRpcGenerate
   echo "\033[37m 你选择了 $ampRpcGenerate"
@@ -155,4 +157,23 @@ funcSelectAmpRpc() {
   esac
 }
 
-funcShowMainMenu
+# funcSelectModelToGenerate 选择项目
+funcSelectModelToGenerate() {
+  cd $ECOPLANTS_META_PROJECT/sql/services/amp
+  read -e -p "请输入Model: " ampModelName
+  if [ ! -f $ampModelName ]; then
+    echo "\033[1m 未查询到该 model  \033[0m"
+    funcSelectModelToGenerate
+  else
+    cd $ECOPLANTS_META_PROJECT
+    eptools gorm -s ./sql/services/amp/$ampModelName -d services/amp/common/model
+    funcShowSuccessOperation
+  fi
+}
+
+# 主入口方法
+Main() {
+  funcShowMainMenu
+}
+
+Main
