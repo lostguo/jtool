@@ -37,7 +37,7 @@ funcSelectMenu() {
       funcShowErrorOperation
     else
       # 删除所有分支（排除main分支）
-      git branch | grep $jtoolWaitDeleteBranch | grep -v "main|master" | xargs git branch -D
+      git branch | grep $jtoolWaitDeleteBranch | grep -v "main\|master" | xargs git branch -D
       funcShowSuccessOperation
     fi
     ;;
