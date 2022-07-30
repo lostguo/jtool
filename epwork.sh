@@ -4,6 +4,20 @@
 ECOPLANTS_META_PROJECT=/Users/chengxingjie/Desktop/ecoplants_projects/meta
 JTOOL_DIR_PATH=/Users/chengxingjie/Desktop/ecoplants_projects/jtool
 
+ampApps[1]="user_app"
+ampApps[2]="core_app"
+ampApps[3]="manager_app"
+ampApps[4]="statistic_app"
+ampApps[5]="task_app"
+ampApps[6]="core_api"
+ampApps[7]="manager_api"
+ampApps[8]="statistic_api"
+ampApps[9]="amp_http"
+ampApps[10]="amp_file_http"
+ampApps[11]="amp_rest"
+ampApps[12]="data_api"
+ampApps[13]="data_depend_api"
+
 funcShowErrorOperation() {
   echo "\033[1m 您的操作有误 \033[0m"
   read -p "请输入任意键继续"
@@ -24,6 +38,7 @@ funcShowMainMenu() {
   echo "\033 1. amp model 生成 \033[0m"
   echo "\033 2. amp rpc 生成  \033[0m"
   echo "\033 3. amp run 批量启动服务\033[0m"
+  echo "\033 4. amp argocd 服务部署 \033[0m"
   echo "\033[37m----------------------------------------\033[0m"
 
   funcSelectMenu
@@ -43,6 +58,9 @@ funcSelectMenu() {
     ;;
   3)
     funcAMPRun
+    ;;
+  4)
+    funcShowAmpArgocd
     ;;
   *) funcShowErrorOperation ;;
   esac
@@ -176,9 +194,72 @@ funcSelectModelToGenerate() {
   fi
 }
 
-funcAMPRun(){
+# funcAMPRun 批量启动AMP服务
+funcAMPRun() {
   cd $JTOOL_DIR_PATH
   bash epwork_apple.sh
+}
+
+# funcShowAmpArgocd 展示 AMP 部署
+funcShowAmpArgocd() {
+  clear
+  echo "\033[37m----------------------------------------\033[0m"
+  echo "\033[1m 你选择了进行 argocd 部署 \033[0m"
+  echo "\033 1. staging  \033[0m"
+  echo "\033 2. autopush  \033[0m"
+  echo "\033 3. preprod  \033[0m"
+  echo "\033 4. prod  \033[0m"
+  echo "\033[37m----------------------------------------\033[0m"
+
+  read -p "请选择环境：" ampArgocdEnv
+  echo "\033[37m 你选择了 $ampArgocdEnv"
+  case $ampArgocdEnv in
+  1 | 2 | 3)
+    funcShowAmpArgocdAppList
+    ;;
+  4)
+    read -p "Prod 环境只支持手动模式，请按任意键继续"
+    funcShowAmpArgocd
+    ;;
+  *)
+    read -p "您的操作有误，请按任意键继续"
+    funcShowAmpArgocd
+    ;;
+  esac
+}
+
+# funcShowAmpArgocdAppList 展示 AMP Argocd 服务
+funcShowAmpArgocdAppList() {
+  clear
+  echo "\033[37m----------------------------------------\033[0m"
+  echo "\033[1m 请选择需要部署的 amp argocd 服务 \033[0m"
+  echo "\033 all. 全部   \033[0m"
+  echo "\033 be. be全部服务   \033[0m"
+  echo "\033 api. api全部服务   \033[0m"
+  argoIdx=0
+  for i in "${ampApps[@]}"; do
+    let argoIdx++
+    echo "\033 $argoIdx. $i   \033[0m"
+  done
+  echo "\033[37m----------------------------------------\033[0m"
+
+  read -p "请输入需要部署的服务" latestDeployAmpService
+
+  case $latestDeployAmpService in
+
+  all) ;;
+
+  be) ;;
+
+  api) ;;
+
+  1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13) ;;
+
+  *)
+    funcShowAmpArgocdAppList
+    ;;
+  esac
+
 }
 
 # 主入口方法
