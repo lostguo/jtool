@@ -31,15 +31,9 @@ funcSelectMenu() {
   case $jtoolCommand in
   1)
     read -p "请输入需要删除的 git 分支前缀：" jtoolWaitDeleteBranch
-
-    if [-z $ampModelName ]; then
-      echo "\033[37m 输入不能为空"
-      funcShowErrorOperation
-    else
-      # 删除所有分支（排除main分支）
-      git branch | grep $jtoolWaitDeleteBranch | grep -v "main\|master" | xargs git branch -D
-      funcShowSuccessOperation
-    fi
+    # 删除所有分支（排除main分支）
+    git branch | grep $jtoolWaitDeleteBranch | grep -v "main\|master" | xargs git branch -D
+    funcShowSuccessOperation
     ;;
 
   *) funcShowErrorOperation ;;
