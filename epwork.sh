@@ -18,6 +18,28 @@ ampApps[11]="amp_rest"
 ampApps[12]="data_api"
 ampApps[13]="data_depend_api"
 
+ampArgocdEnv[1]="staging"
+ampArgocdEnv[2]="autopush"
+ampArgocdEnv[3]="preprod"
+ampArgocdEnv[4]="prod"
+
+#ampAppsScope[]
+
+declare -A ampAppsScope
+ampAppsScope[1]="services"
+ampAppsScope[2]="services"
+ampAppsScope[3]="services"
+ampAppsScope[4]="services"
+ampAppsScope[5]="services"
+ampAppsScope[6]="apis"
+ampAppsScope[7]="apis"
+ampAppsScope[8]="apis"
+ampAppsScope[9]="apis"
+ampAppsScope[10]="apis"
+ampAppsScope[11]="apis"
+ampAppsScope[12]="apis"
+ampAppsScope[13]="apis"
+
 funcShowErrorOperation() {
   echo "\033[1m 您的操作有误 \033[0m"
   read -p "请输入任意键继续"
@@ -97,7 +119,7 @@ funcSelectAmpRpc() {
 
   case $ampRpcGenerate in
   1)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c services -p amp -s user_app
     eptools rpc -c services -p amp -s core_app
     eptools rpc -c services -p amp -s manager_app
@@ -106,7 +128,7 @@ funcSelectAmpRpc() {
     funcShowSuccessOperation
     ;;
   2)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s core_api
     eptools rpc -c apis -p amp -s manager_api
     eptools rpc -c apis -p amp -s statistic_api
@@ -117,62 +139,62 @@ funcSelectAmpRpc() {
     funcShowSuccessOperation
     ;;
   3)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c services -p amp -s user_app
     funcShowSuccessOperation
     ;;
   4)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c services -p amp -s core_app
     funcShowSuccessOperation
     ;;
   5)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c services -p amp -s manager_app
     funcShowSuccessOperation
     ;;
   6)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c services -p amp -s statistic_app
     funcShowSuccessOperation
     ;;
   7)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c services -p amp -s task_app
     funcShowSuccessOperation
     ;;
   8)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s core_api
     funcShowSuccessOperation
     ;;
   9)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s manager_api
     funcShowSuccessOperation
     ;;
   10)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s statistic_api
     funcShowSuccessOperation
     ;;
   11)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools api -p amp -s amp_http
     funcShowSuccessOperation
     ;;
   9)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools api -p amp -s amp_file_http
     funcShowSuccessOperation
     ;;
   9)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s data_api
     funcShowSuccessOperation
     ;;
   9)
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s data_depend_api
     funcShowSuccessOperation
     ;;
@@ -182,13 +204,13 @@ funcSelectAmpRpc() {
 
 # funcSelectModelToGenerate 选择项目
 funcSelectModelToGenerate() {
-  cd $ECOPLANTS_META_PROJECT/sql/services/amp
+  cd $ECOPLANTS_META_PROJECT/sql/services/amp || exit
   read -e -p "请输入Model: " ampModelName
   if [ ! -f $ampModelName ]; then
     echo "\033[1m 未查询到该 model  \033[0m"
     funcSelectModelToGenerate
   else
-    cd $ECOPLANTS_META_PROJECT
+    cd $ECOPLANTS_META_PROJECT || exit
     eptools gorm -s ./sql/services/amp/$ampModelName -d services/amp/common/model
     funcShowSuccessOperation
   fi
@@ -196,7 +218,7 @@ funcSelectModelToGenerate() {
 
 # funcAMPRun 批量启动AMP服务
 funcAMPRun() {
-  cd $JTOOL_DIR_PATH
+  cd $JTOOL_DIR_PATH || exit
   bash epwork_apple.sh
 }
 
@@ -209,6 +231,7 @@ funcShowAmpArgocd() {
   echo "\033 2. autopush  \033[0m"
   echo "\033 3. preprod  \033[0m"
   echo "\033 4. prod  \033[0m"
+  echo "\033 5. 清理 argocd yaml 文件   \033[0m"
   echo "\033[37m----------------------------------------\033[0m"
 
   read -p "请选择环境：" ampArgocdEnv
@@ -219,6 +242,11 @@ funcShowAmpArgocd() {
     ;;
   4)
     read -p "Prod 环境只支持手动模式，请按任意键继续"
+    funcShowAmpArgocd
+    ;;
+  5)
+    rm $JTOOL_DIR_PATH/out/amp_*.yaml
+    read -p "argocd yaml 部署文件清理干净"
     funcShowAmpArgocd
     ;;
   *)
@@ -243,20 +271,83 @@ funcShowAmpArgocdAppList() {
   done
   echo "\033[37m----------------------------------------\033[0m"
 
-  read -p "请输入需要部署的服务" latestDeployAmpService
+  read -p "请输入需要部署的服务：" latestDeployAmpService
 
   case $latestDeployAmpService in
 
-  all) ;;
+  all | be | api)
 
-  be) ;;
+    # 声明关联数组 api be
+    # 遍历 app 进行输出
+    randStr=$(date +%s)
+    argoYamlFile="/out/amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
+    fromPath=$JTOOL_DIR_PATH$argoYamlFile
 
-  api) ;;
+    echo "env: ${ampArgocdEnv[$ampArgocdEnv]}" >>"$fromPath"
+    echo "commit:" >>"$fromPath"
+    echo "services:" >>"$fromPath"
 
-  1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13) ;;
+    batchIdx=0
+    for thisTimeApp in "${ampApps[@]}"; do
+      let batchIdx++
 
+      if [ "$latestDeployAmpService" == "be" ] && [ ${ampAppsScope[$batchIdx]} == "apis" ]; then
+        continue
+      fi
+
+      if [ "$latestDeployAmpService" == "api" ] && [ ${ampAppsScope[$batchIdx]} == "services" ]; then
+        continue
+      fi
+
+      echo "  - name: ${ampAppsScope[$batchIdx]}/amp/${ampApps[$batchIdx]}" >>"$fromPath"
+      echo "    version: auto" >>"$fromPath"
+      echo "    desc: |" >>"$fromPath"
+      echo "      amp ${ampApps[$batchIdx]}" >>"$fromPath"
+      echo "    commit: " >>"$fromPath"
+    done
+    echo "bot_url: " >>$fromPath
+    echo "fileName is $argoYamlFile"
+    funcShowSuccessOperation
+    ;;
+  1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13)
+    randStr=$(date +%s)
+    argoYamlFile="/out/amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
+    fromPath=$JTOOL_DIR_PATH$argoYamlFile
+
+    echo "env: ${ampArgocdEnv[$ampArgocdEnv]}" >>"$fromPath"
+    echo "commit:" >>"$fromPath"
+    echo "services:" >>"$fromPath"
+    echo "  - name: ${ampAppsScope[$latestDeployAmpService]}/amp/${ampApps[$latestDeployAmpService]}" >>"$fromPath"
+    echo "    version: auto" >>"$fromPath"
+    echo "    desc: |" >>"$fromPath"
+    echo "      amp ${ampApps[$latestDeployAmpService]}" >>"$fromPath"
+    echo "    commit: " >>"$fromPath"
+    echo "bot_url: " >>"$fromPath"
+
+    echo "fileName is $argoYamlFile"
+    funcShowSuccessOperation
+    ;;
   *)
-    funcShowAmpArgocdAppList
+    echo "this line $latestDeployAmpService"
+
+    randStr=$(date +%s)
+    argoYamlFile="/out/amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
+    fromPath=$JTOOL_DIR_PATH$argoYamlFile
+
+    echo "env: ${ampArgocdEnv[$ampArgocdEnv]}" >>"$fromPath"
+    echo "commit:" >>"$fromPath"
+    echo "services:" >>"$fromPath"
+    tempArr=($latestDeployAmpService)
+    for thisTimeApp in "${tempArr[@]}"; do
+      echo "  - name: ${ampAppsScope[$thisTimeApp]}/amp/${ampApps[$thisTimeApp]}" >>"$fromPath"
+      echo "    version: auto" >>"$fromPath"
+      echo "    desc: |" >>"$fromPath"
+      echo "      amp ${ampApps[$thisTimeApp]}" >>"$fromPath"
+      echo "    commit: " >>"$fromPath"
+    done
+    echo "bot_url: " >>$fromPath
+    echo "fileName is $argoYamlFile"
+    funcShowSuccessOperation
     ;;
   esac
 
