@@ -245,7 +245,10 @@ funcShowAmpArgocd() {
     funcShowAmpArgocd
     ;;
   5)
-    rm $JTOOL_DIR_PATH/out/amp_*.yaml
+    rm $JTOOL_DIR_PATH/out/amp_*.publish.yaml
+    rm $ECOPLANTS_META_PROJECT/amp_staging_*.publish.yaml
+    rm $ECOPLANTS_META_PROJECT/amp_autopush_*.publish.yaml
+    rm $ECOPLANTS_META_PROJECT/amp_preprod_*.publish.yaml
     read -p "argocd yaml 部署文件清理干净"
     funcShowAmpArgocd
     ;;
@@ -314,7 +317,7 @@ funcShowAmpArgocdAppList() {
       echo "      amp ${ampApps[$batchIdx]}" >>"$fromPath"
       echo "    commit: " >>"$fromPath"
     done
-    echo "bot_url: " >>$fromPath
+    echo "bot_url: $ARGO_BOT" >>$fromPath
 
     echo "fileName is $argoYamlFile"
     funcArgocdDeploy "$argoYamlFile"
@@ -333,7 +336,7 @@ funcShowAmpArgocdAppList() {
     echo "    desc: |" >>"$fromPath"
     echo "      amp ${ampApps[$latestDeployAmpService]}" >>"$fromPath"
     echo "    commit: " >>"$fromPath"
-    echo "bot_url: " >>"$fromPath"
+    echo "bot_url: $ARGO_BOT" >>"$fromPath"
 
     echo "fileName is $argoYamlFile"
     funcArgocdDeploy "$argoYamlFile"
@@ -357,7 +360,7 @@ funcShowAmpArgocdAppList() {
       echo "      amp ${ampApps[$thisTimeApp]}" >>"$fromPath"
       echo "    commit: " >>"$fromPath"
     done
-    echo "bot_url: " >>"$fromPath"
+    echo "bot_url: $ARGO_BOT" >>"$fromPath"
 
     echo "fileName is $argoYamlFile"
     funcArgocdDeploy "$argoYamlFile"
