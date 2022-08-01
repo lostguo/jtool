@@ -258,6 +258,8 @@ funcShowAmpArgocd() {
 
 # 使用指定的 argocd yaml 进行服务部署
 funcArgocdDeploy() {
+
+  cp ${JTOOL_DIR_PATH}/out/"$1" ${ECOPLANTS_META_PROJECT}/"$1"
   cd $ECOPLANTS_META_PROJECT || exit
 
   eptools deploy -f "$1"
@@ -287,8 +289,8 @@ funcShowAmpArgocdAppList() {
     # 声明关联数组 api be
     # 遍历 app 进行输出
     randStr=$(date +%s)
-    argoYamlFile="/out/amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
-    fromPath=$JTOOL_DIR_PATH$argoYamlFile
+    argoYamlFile="amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
+    fromPath=$JTOOL_DIR_PATH/out/$argoYamlFile
 
     echo "env: ${ampArgocdEnv[$ampArgocdEnv]}" >>"$fromPath"
     echo "commit:" >>"$fromPath"
@@ -320,8 +322,8 @@ funcShowAmpArgocdAppList() {
     ;;
   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13)
     randStr=$(date +%s)
-    argoYamlFile="/out/amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
-    fromPath=$JTOOL_DIR_PATH$argoYamlFile
+    argoYamlFile="amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
+    fromPath=$JTOOL_DIR_PATH/out/$argoYamlFile
 
     echo "env: ${ampArgocdEnv[$ampArgocdEnv]}" >>"$fromPath"
     echo "commit:" >>"$fromPath"
@@ -341,8 +343,8 @@ funcShowAmpArgocdAppList() {
     echo "this line $latestDeployAmpService"
 
     randStr=$(date +%s)
-    argoYamlFile="/out/amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
-    fromPath=$JTOOL_DIR_PATH$argoYamlFile
+    argoYamlFile="amp_${ampArgocdEnv[$ampArgocdEnv]}_$((randStr)).publish.yaml"
+    fromPath=$JTOOL_DIR_PATH/out/$argoYamlFile
 
     echo "env: ${ampArgocdEnv[$ampArgocdEnv]}" >>"$fromPath"
     echo "commit:" >>"$fromPath"
