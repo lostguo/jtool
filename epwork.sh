@@ -183,17 +183,17 @@ funcSelectAmpRpc() {
     eptools api -p amp -s amp_http
     funcShowSuccessOperation
     ;;
-  9)
+  12)
     cd $ECOPLANTS_META_PROJECT || exit
     eptools api -p amp -s amp_file_http
     funcShowSuccessOperation
     ;;
-  9)
+  13)
     cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s data_api
     funcShowSuccessOperation
     ;;
-  9)
+  14)
     cd $ECOPLANTS_META_PROJECT || exit
     eptools rpc -c apis -p amp -s data_depend_api
     funcShowSuccessOperation
@@ -256,6 +256,13 @@ funcShowAmpArgocd() {
   esac
 }
 
+# 使用指定的 argocd yaml 进行服务部署
+funcArgocdDeploy() {
+  cd $ECOPLANTS_META_PROJECT || exit
+
+  eptools deploy -f "$1"
+}
+
 # funcShowAmpArgocdAppList 展示 AMP Argocd 服务
 funcShowAmpArgocdAppList() {
   clear
@@ -306,7 +313,9 @@ funcShowAmpArgocdAppList() {
       echo "    commit: " >>"$fromPath"
     done
     echo "bot_url: " >>$fromPath
+
     echo "fileName is $argoYamlFile"
+    funcArgocdDeploy "$argoYamlFile"
     funcShowSuccessOperation
     ;;
   1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13)
@@ -325,6 +334,7 @@ funcShowAmpArgocdAppList() {
     echo "bot_url: " >>"$fromPath"
 
     echo "fileName is $argoYamlFile"
+    funcArgocdDeploy "$argoYamlFile"
     funcShowSuccessOperation
     ;;
   *)
@@ -345,8 +355,10 @@ funcShowAmpArgocdAppList() {
       echo "      amp ${ampApps[$thisTimeApp]}" >>"$fromPath"
       echo "    commit: " >>"$fromPath"
     done
-    echo "bot_url: " >>$fromPath
+    echo "bot_url: " >>"$fromPath"
+
     echo "fileName is $argoYamlFile"
+    funcArgocdDeploy "$argoYamlFile"
     funcShowSuccessOperation
     ;;
   esac
