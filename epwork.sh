@@ -61,6 +61,7 @@ funcShowMainMenu() {
   echo "\033 2. amp rpc 生成  \033[0m"
   echo "\033 3. amp run 批量启动服务\033[0m"
   echo "\033 4. amp argocd 服务部署 \033[0m"
+  echo "\033 5. amp 伪资产生成 \033[0m"
   echo "\033[37m----------------------------------------\033[0m"
 
   funcSelectMenu
@@ -83,6 +84,9 @@ funcSelectMenu() {
     ;;
   4)
     funcShowAmpArgocd
+    ;;
+  5)
+    funcGenerateAssetZip
     ;;
   *) funcShowErrorOperation ;;
   esac
@@ -220,6 +224,13 @@ funcSelectModelToGenerate() {
 funcAMPRun() {
   cd $JTOOL_DIR_PATH || exit
   bash epwork_apple.sh
+}
+
+funcGenerateAssetZip() {
+  cd $ECOPLANTS_META_PROJECT/atools/amp_data_tool/gasset || exit
+  read -e -p "请输入贴图资产ID: " ampAssetZipId
+  go run main.go generate -s tietu -u "$ampAssetZipId"
+  open $ECOPLANTS_META_PROJECT/atools/amp_data_tool/gasset/out
 }
 
 # funcShowAmpArgocd 展示 AMP 部署
